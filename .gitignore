@@ -1,1 +1,4 @@
 /venv
+credentials.py
+data.json
+**/__pycache__/
