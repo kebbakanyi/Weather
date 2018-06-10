@@ -39,6 +39,7 @@ def weather_forecast():
     weekday = date.today()
 
     with forecast(f'{DARKSKY_API_KEY}', *weather_location) as location:
+        print(f'Current Temperature in {formatted_address} is {int(round(location.temperature))}\xb0F')
         print(location.daily.summary, end='\n---\n')
 
         for day in location.daily:
