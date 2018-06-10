@@ -20,7 +20,7 @@ def addr_coordinates(address, api_key):
               'address': the_address}
 
     r = requests.get(base_url, params=params)
-    
+
     results = r.json()['results']
     formatted_address = results[0]['formatted_address']
     location = results[0]['geometry']['location']
