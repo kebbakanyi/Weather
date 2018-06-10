@@ -1,15 +1,9 @@
 import requests
-from datetime import datetime as dt
-import time
 from darksky import forecast
 import credentials
 
-darksky_api_key = credentials.DARKSKY_API_KEY
+DARKSKY_API_KEY = credentials.DARKSKY_API_KEY
 GOOGLE_API_KEY = credentials.GOOGLE_API_KEY
-
-
-def format_time(my_time):
-    return time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime(int(my_time)))
 
 
 def get_address():
@@ -17,11 +11,11 @@ def get_address():
     return my_address
 
 
-def addr_coordinates(address, key):
+def addr_coordinates(address, api_key):
 
     the_address = f'address={address}'
     base_url = 'https://maps.googleapis.com/maps/api/geocode/json?'
-    params = {'&key': f'{key}',
+    params = {'&key': f'{api_key}',
               'address': the_address}
 
     r = requests.get(base_url, params=params)
@@ -35,9 +29,10 @@ def weather_forecast():
 
     address = get_address()
     lat, long = addr_coordinates(address, GOOGLE_API_KEY)
-    weather_location = (darksky_api_key, lat, long)
+    weather_location = (DARKSKY_API_KEY, lat, long)
     location_forecast = forecast(*weather_location)
-    location_temp = location_forecast['currently']['temperature']
+    location_temp = str(
+        location_forecast['currently']['temperature']) + '\xB0F'
 
     return location_temp
 
