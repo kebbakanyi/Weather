@@ -20,6 +20,7 @@ def addr_coordinates(address, api_key):
               'address': the_address}
 
     r = requests.get(base_url, params=params)
+    
     results = r.json()['results']
     formatted_address = results[0]['formatted_address']
     location = results[0]['geometry']['location']
@@ -34,9 +35,12 @@ def weather_forecast():
     weather_location = (lat, long)
 
     print(f'\n-----Weather forecast for {formatted_address}-----\n')
+
     weekday = date.today()
+
     with forecast(f'{DARKSKY_API_KEY}', *weather_location) as location:
         print(location.daily.summary, end='\n---\n')
+
         for day in location.daily:
             day = dict(day=date.strftime(weekday, '%a'),
                        sum=day.summary,
@@ -44,6 +48,7 @@ def weather_forecast():
                        tempMax=int(round(day.temperatureMax)))
             print(
                 '{day}: {sum} Temp range: {tempMin}\xb0F - {tempMax}\xb0F'.format(**day))
+
             weekday += timedelta(days=1)
 
 
