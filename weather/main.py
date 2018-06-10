@@ -1,3 +1,4 @@
+from datetime import date, timedelta
 import requests
 from darksky import forecast
 import credentials
@@ -20,21 +21,30 @@ def addr_coordinates(address, api_key):
 
     r = requests.get(base_url, params=params)
     results = r.json()['results']
+    formatted_address = results[0]['formatted_address']
     location = results[0]['geometry']['location']
 
-    return location['lat'], location['lng']
+    return location['lat'], location['lng'], formatted_address
 
 
 def weather_forecast():
 
     address = get_address()
-    lat, long = addr_coordinates(address, GOOGLE_API_KEY)
-    weather_location = (DARKSKY_API_KEY, lat, long)
-    location_forecast = forecast(*weather_location)
-    location_temp = str(
-        location_forecast['currently']['temperature']) + '\xB0F'
+    lat, long, formatted_address = addr_coordinates(address, GOOGLE_API_KEY)
+    weather_location = (lat, long)
 
-    return location_temp
+    print(f'\n-----Weather forecast for {formatted_address}-----\n')
+    weekday = date.today()
+    with forecast(f'{DARKSKY_API_KEY}', *weather_location) as location:
+        print(location.daily.summary, end='\n---\n')
+        for day in location.daily:
+            day = dict(day=date.strftime(weekday, '%a'),
+                       sum=day.summary,
+                       tempMin=int(round(day.temperatureMin)),
+                       tempMax=int(round(day.temperatureMax)))
+            print(
+                '{day}: {sum} Temp range: {tempMin}\xb0F - {tempMax}\xb0F'.format(**day))
+            weekday += timedelta(days=1)
 
 
-print(weather_forecast())
+weather_forecast()
