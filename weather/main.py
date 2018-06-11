@@ -1,4 +1,4 @@
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 import requests
 from darksky import forecast
 import credentials
@@ -10,6 +10,23 @@ GOOGLE_API_KEY = credentials.GOOGLE_API_KEY
 def get_address():
     my_address = input('Input Address: ').replace(' ', '+')
     return my_address
+
+
+def convert_time(timestamp):
+    return datetime.utcfromtimestamp(timestamp)
+
+
+def time_zone(address, time):
+
+    base_url = f'https://maps.googleapis.com/maps/api/timezone/json?'
+    params = f'location={address[0]},{address[1]}&timestamp={time}&key={GOOGLE_API_KEY}'
+    url = base_url + params
+    r = requests.get(url)
+    results = r.json()
+
+    offset_time = results['rawOffset']
+    dst_offset = results['dstOffset']
+    return offset_time, dst_offset
 
 
 def addr_coordinates(address, api_key):
@@ -31,8 +48,8 @@ def addr_coordinates(address, api_key):
 def weather_forecast():
 
     address = get_address()
-    lat, long, formatted_address = addr_coordinates(address, GOOGLE_API_KEY)
-    weather_location = (lat, long)
+    lat, lng, formatted_address = addr_coordinates(address, GOOGLE_API_KEY)
+    weather_location = (lat, lng)
 
     print(f'\n-----Weather forecast for {formatted_address}-----\n')
 
@@ -42,6 +59,11 @@ def weather_forecast():
         print(
             f'Current Temperature in {formatted_address} is {int(round(location.temperature))}\xb0F')
         print(location.daily.summary, end='\n---\n')
+
+        right_time, dst_offset = time_zone(weather_location, location.time)
+
+        print(convert_time(location.time + right_time + dst_offset))
+        print('--------')
 
         for day in location.daily:
             day = dict(day=date.strftime(weekday, '%a'),
