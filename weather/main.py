@@ -54,7 +54,6 @@ def weather_forecast():
     print(f'\n-----Weather forecast for {formatted_address}-----\n')
 
     weekday = date.today()
-
     with forecast(f'{DARKSKY_API_KEY}', *weather_location) as location:
         print(
             f'Current Temperature in {formatted_address} is {int(round(location.temperature))}\xb0F')
@@ -62,7 +61,8 @@ def weather_forecast():
 
         right_time, dst_offset = time_zone(weather_location, location.time)
 
-        print(convert_time(location.time + right_time + dst_offset))
+        print(
+            f'Date/Time in {formatted_address} {convert_time(location.time + right_time + dst_offset)}')
         print('--------')
 
         for day in location.daily:
