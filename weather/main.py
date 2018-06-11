@@ -76,4 +76,5 @@ def weather_forecast():
             weekday += timedelta(days=1)
 
 
-weather_forecast()
+if __name__ == '__main__':
+    weather_forecast()
