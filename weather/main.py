@@ -45,9 +45,8 @@ def addr_coordinates(address, api_key):
     return location['lat'], location['lng'], formatted_address
 
 
-def weather_forecast():
+def weather_forecast(address):
 
-    address = get_address()
     lat, lng, formatted_address = addr_coordinates(address, GOOGLE_API_KEY)
     weather_location = (lat, lng)
 
@@ -77,4 +76,6 @@ def weather_forecast():
 
 
 if __name__ == '__main__':
-    weather_forecast()
+
+    input_address = get_address()
+    weather_forecast(input_address)
