@@ -1,4 +1,6 @@
 {
     "python.pythonPath": "${workspaceFolder}/venv/bin/python",
-    "todo-tree.flat": false
+    "python.linting.pylintEnabled": true,
+    "python.linting.enabled": true,
+    
 }

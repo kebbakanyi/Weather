@@ -45,15 +45,13 @@ def addr_coordinates(address, api_key):
     return location['lat'], location['lng'], formatted_address
 
 
-def weather_forecast(address):
-
-    lat, lng, formatted_address = addr_coordinates(address, GOOGLE_API_KEY)
-    weather_location = (lat, lng)
+def weather_forecast(weather_location, formatted_address):
 
     print(f'\n-----Weather forecast for {formatted_address}-----\n')
-
     weekday = date.today()
+
     with forecast(f'{DARKSKY_API_KEY}', *weather_location) as location:
+
         print(
             f'Current Temperature in {formatted_address} is {int(round(location.temperature))}\xb0F')
         print(location.daily.summary, end='\n---\n')
@@ -63,19 +61,21 @@ def weather_forecast(address):
         print(
             f'Date/Time in {formatted_address} {convert_time(location.time + right_time + dst_offset)}')
         print('--------')
-
         for day in location.daily:
             day = dict(day=date.strftime(weekday, '%a'),
                        sum=day.summary,
                        tempMin=int(round(day.temperatureMin)),
                        tempMax=int(round(day.temperatureMax)))
+
             print(
                 '{day}: {sum} Temp range: {tempMin}\xb0F - {tempMax}\xb0F'.format(**day))
-
             weekday += timedelta(days=1)
 
 
 if __name__ == '__main__':
 
     input_address = get_address()
-    weather_forecast(input_address)
+    latittude, longitude, address = addr_coordinates(
+        input_address, GOOGLE_API_KEY)
+    weather_location = (latittude, longitude)
+    weather_forecast(weather_location, address)
