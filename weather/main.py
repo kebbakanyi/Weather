@@ -13,7 +13,7 @@ def get_address():
 
 
 def convert_time(timestamp):
-    return datetime.utcfromtimestamp(timestamp)
+    return datetime.utcfromtimestamp(timestamp).strftime('%m-%d-%Y %H:%M:%S')
 
 
 def time_zone(address, time):
@@ -33,7 +33,7 @@ def addr_coordinates(address, api_key):
 
     the_address = f'address={address}'
     base_url = 'https://maps.googleapis.com/maps/api/geocode/json?'
-    params = {'&key': f'{api_key}',
+    params = {'&key': api_key,
               'address': the_address}
 
     r = requests.get(base_url, params=params)
@@ -47,7 +47,7 @@ def addr_coordinates(address, api_key):
 
 def weather_forecast(weather_location, formatted_address):
 
-    print(f'\n-----Weather forecast for {formatted_address}-----\n')
+    print(f'\n----- Forecast for {formatted_address}-----\n')
     weekday = date.today()
 
     with forecast(f'{DARKSKY_API_KEY}', *weather_location) as location:
